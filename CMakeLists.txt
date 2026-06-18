@@ -164,6 +164,10 @@ target_compile_definitions(aurora_mtx PRIVATE MTX_USE_PS=1)
 
 add_subdirectory(libs/freeverb)
 
+add_library(flecs STATIC libs/flecs/flecs.c)
+target_include_directories(flecs PUBLIC ${CMAKE_SOURCE_DIR}/libs/flecs)
+set_target_properties(flecs PROPERTIES FOLDER "Libraries")
+
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(DUSK_GFX_DEBUG_GROUPS_DEFAULT ON)
 else ()
@@ -522,7 +526,8 @@ endif ()
 
 target_compile_definitions(dusklight PRIVATE ${GAME_COMPILE_DEFS})
 target_include_directories(dusklight PRIVATE ${GAME_INCLUDE_DIRS})
-target_link_libraries(dusklight PRIVATE aurora::main ${GAME_LIBS} ${JSYSTEM_LINK_LIBRARIES})
+target_link_libraries(dusklight PRIVATE aurora::main flecs ${GAME_LIBS} ${JSYSTEM_LINK_LIBRARIES} ${CMAKE_DL_LIBS})
+set_target_properties(dusklight PROPERTIES ENABLE_EXPORTS ON)
 target_precompile_headers(dusklight PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/include/dusk_pch.hpp>")
 if (TARGET crashpad_handler)
     add_dependencies(dusklight crashpad_handler)
@@ -532,6 +537,11 @@ if (TARGET crashpad_handler)
             "$<TARGET_FILE_DIR:dusklight>"
         COMMENT "Copying crashpad handler"
     )
+endif ()
+
+option(DUSK_BUILD_MOD_EXAMPLES "Build example Dusklight mods" ON)
+if (DUSK_BUILD_MOD_EXAMPLES AND NOT ANDROID AND NOT IOS AND NOT TVOS)
+    add_subdirectory(examples/mods/hello_flecs EXCLUDE_FROM_ALL)
 endif ()
 
 if (ANDROID)

@@ -62,6 +62,9 @@
 #include "dusk/iso_validate.hpp"
 #include "dusk/logging.h"
 #include "dusk/main.h"
+#include "dusk/modding/game_bridge.hpp"
+#include "dusk/modding/mod_manager.hpp"
+#include "dusk/modding/sdk_world.hpp"
 #include "dusk/ui/menu_bar.hpp"
 #include "dusk/ui/overlay.hpp"
 #include "dusk/ui/prelaunch.hpp"
@@ -224,6 +227,7 @@ void main01(void) {
 
     OSReport("Calling fopAcM_initManager()...\n");
     fopAcM_initManager();
+    dusk::modding::game_bridge::initialize();
 
     OSReport("Calling cDyl_InitAsync()...\n");
     cDyl_InitAsync();
@@ -334,6 +338,9 @@ void main01(void) {
             mDoAud_Execute();
         }
 
+        dusk::modding::game_bridge::sync_before_mods(pacing.presentation_dt_seconds);
+        dusk::modding::progress(pacing.presentation_dt_seconds);
+
         aurora_end_frame();
 
         FrameMark;
@@ -363,6 +370,9 @@ void main01(void) {
     } while (dusk::IsRunning);
 
     exit:;
+    dusk::modding::game_bridge::shutdown();
+    dusk::modding::shutdown();
+    dusk::modding::shutdown_mods();
     dusk::ui::shutdown();
 }
 
@@ -662,6 +672,8 @@ int game_main(int argc, char* argv[]) {
         aurora_shutdown();
         return 0;
     }
+
+    dusk::modding::initialize();
 
     dusk::texture_replacements::reload();
     dusk::ui::initialize();

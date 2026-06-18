@@ -1416,6 +1416,10 @@ set(DUSK_FILES
         include/dusk/config.hpp
         include/dusk/dvd_asset.hpp
         include/dusk/scope_guard.hpp
+        include/dusklight/sdk.hpp
+        include/dusklight/modding/components.hpp
+        include/dusklight/modding/events.hpp
+        include/dusklight/modding/version.hpp
         src/dusk/dvd_asset.cpp
         src/d/actor/d_a_alink_dusk.cpp
         src/dusk/android_frame_rate.hpp
@@ -1445,6 +1449,16 @@ set(DUSK_FILES
         src/dusk/io.cpp
         src/dusk/layout.cpp
         src/dusk/logging.cpp
+        src/dusk/modding/game_bridge.cpp
+        src/dusk/modding/game_bridge.hpp
+        src/dusk/modding/mod_manager.cpp
+        src/dusk/modding/mod_manager.hpp
+        src/dusk/modding/mod_manifest.cpp
+        src/dusk/modding/mod_manifest.hpp
+        src/dusk/modding/sdk_world.cpp
+        src/dusk/modding/sdk_world.hpp
+        src/dusk/modding/shared_library.cpp
+        src/dusk/modding/shared_library.hpp
         src/dusk/settings.cpp
         src/dusk/speedrun.cpp
         src/dusk/string.cpp

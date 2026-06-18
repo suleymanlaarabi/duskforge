@@ -17,6 +17,7 @@
 #include "f_pc/f_pc_manager.h"
 #include "f_pc/f_pc_debug_sv.h"
 #include "c/c_dylink.h"
+#include "dusk/modding/game_bridge.hpp"
 #include "m_Do/m_Do_printf.h"
 
 #if DEBUG
@@ -413,6 +414,7 @@ static int fopAc_Delete(void* i_this) {
     #endif
 
     if (ret == TRUE) {
+        dusk::modding::game_bridge::on_actor_destroyed(actor);
         fopAcTg_ActorQTo(&actor->actor_tag);
         fopDwTg_DrawQTo(&actor->draw_tag);
         fopAcM_DeleteHeap((fopAc_ac_c*) i_this);
@@ -542,6 +544,7 @@ static int fopAc_Create(void* i_this) {
 
     if (ret == cPhs_COMPLEATE_e) {
         fopDwTg_ToDrawQ(&actor->draw_tag, fpcM_DrawPriority(actor));
+        dusk::modding::game_bridge::on_actor_created(actor);
     } else if (ret == cPhs_ERROR_e) {
         fopAcM_OnCondition(actor, 0x10);
     }

@@ -72,13 +72,12 @@
           "type": "BOOL",
           "value": false
         },
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install"
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install",
+        "CMAKE_LINKER_TYPE": "LLD"
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "hostOS": [
-            "Linux"
-          ]
+          "hostOS": ["Linux"]
         },
         "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
           "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}"
@@ -88,34 +87,22 @@
     {
       "name": "linux-default-debug",
       "displayName": "Linux (default) Debug",
-      "inherits": [
-        "debug",
-        "linux-default"
-      ]
+      "inherits": ["debug", "linux-default"]
     },
     {
       "name": "linux-default-debug-asan",
       "displayName": "Linux (default) Debug ASan",
-      "inherits": [
-        "debug",
-        "linux-default",
-        "asan"
-      ]
+      "inherits": ["debug", "linux-default", "asan"]
     },
     {
       "name": "linux-default-relwithdebinfo",
       "displayName": "Linux (default) RelWithDebInfo",
-      "inherits": [
-        "relwithdebinfo",
-        "linux-default"
-      ]
+      "inherits": ["relwithdebinfo", "linux-default"]
     },
     {
       "name": "linux-clang",
       "displayName": "Linux (Clang)",
-      "inherits": [
-        "linux-default"
-      ],
+      "inherits": ["linux-default"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++"
@@ -124,27 +111,17 @@
     {
       "name": "linux-clang-debug",
       "displayName": "Linux (Clang) Debug",
-      "inherits": [
-        "debug",
-        "linux-clang"
-      ]
+      "inherits": ["debug", "linux-clang"]
     },
     {
       "name": "linux-clang-debug-asan",
       "displayName": "Linux (Clang) Debug ASan",
-      "inherits": [
-        "debug",
-        "linux-clang",
-        "asan"
-      ]
+      "inherits": ["debug", "linux-clang", "asan"]
     },
     {
       "name": "linux-clang-relwithdebinfo",
       "displayName": "Linux (Clang) RelWithDebInfo",
-      "inherits": [
-        "relwithdebinfo",
-        "linux-clang"
-      ]
+      "inherits": ["relwithdebinfo", "linux-clang"]
     },
     {
       "name": "windows-msvc",
@@ -166,36 +143,24 @@
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "hostOS": [
-            "Windows"
-          ]
+          "hostOS": ["Windows"]
         }
       }
     },
     {
       "name": "windows-msvc-debug",
       "displayName": "Windows (MSVC) Debug",
-      "inherits": [
-        "debug",
-        "windows-msvc"
-      ]
+      "inherits": ["debug", "windows-msvc"]
     },
     {
       "name": "windows-msvc-debug-asan",
       "displayName": "Windows (MSVC) Debug ASan",
-      "inherits": [
-        "debug",
-        "windows-msvc",
-        "asan"
-      ]
+      "inherits": ["debug", "windows-msvc", "asan"]
     },
     {
       "name": "windows-msvc-relwithdebinfo",
       "displayName": "Windows (MSVC) RelWithDebInfo",
-      "inherits": [
-        "relwithdebinfo",
-        "windows-msvc"
-      ]
+      "inherits": ["relwithdebinfo", "windows-msvc"]
     },
     {
       "name": "windows-arm64-msvc",
@@ -213,18 +178,14 @@
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "hostOS": [
-            "Windows"
-          ]
+          "hostOS": ["Windows"]
         }
       }
     },
     {
       "name": "windows-clang",
       "displayName": "Windows (Clang)",
-      "inherits": [
-        "windows-msvc"
-      ],
+      "inherits": ["windows-msvc"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang-cl",
         "CMAKE_CXX_COMPILER": "clang-cl",
@@ -239,18 +200,12 @@
     {
       "name": "windows-clang-debug",
       "displayName": "Windows (Clang) Debug",
-      "inherits": [
-        "debug",
-        "windows-clang"
-      ]
+      "inherits": ["debug", "windows-clang"]
     },
     {
       "name": "windows-clang-relwithdebinfo",
       "displayName": "Windows (Clang) RelWithDebInfo",
-      "inherits": [
-        "relwithdebinfo",
-        "windows-clang"
-      ]
+      "inherits": ["relwithdebinfo", "windows-clang"]
     },
     {
       "name": "macos-default",
@@ -266,45 +221,31 @@
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "hostOS": [
-            "macOS"
-          ]
+          "hostOS": ["macOS"]
         }
       }
     },
     {
       "name": "macos-default-debug",
       "displayName": "macOS (default) Debug",
-      "inherits": [
-        "debug",
-        "macos-default"
-      ]
+      "inherits": ["debug", "macos-default"]
     },
     {
       "name": "macos-default-debug-asan",
       "displayName": "macOS (default) Debug ASan",
-      "inherits": [
-        "debug",
-        "macos-default",
-        "asan"
-      ]
+      "inherits": ["debug", "macos-default", "asan"]
     },
     {
       "name": "macos-default-relwithdebinfo",
       "displayName": "macOS (default) RelWithDebInfo",
-      "inherits": [
-        "relwithdebinfo",
-        "macos-default"
-      ]
+      "inherits": ["relwithdebinfo", "macos-default"]
     },
     {
       "name": "ios-default",
       "displayName": "iOS",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
-      "inherits": [
-        "relwithdebinfo"
-      ],
+      "inherits": ["relwithdebinfo"],
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "ios.toolchain.cmake",
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install",
@@ -331,9 +272,7 @@
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "hostOS": [
-            "macOS"
-          ]
+          "hostOS": ["macOS"]
         }
       }
     },
@@ -342,9 +281,7 @@
       "displayName": "tvOS",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
-      "inherits": [
-        "relwithdebinfo"
-      ],
+      "inherits": ["relwithdebinfo"],
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "ios.toolchain.cmake",
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install",
@@ -372,9 +309,7 @@
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "hostOS": [
-            "macOS"
-          ]
+          "hostOS": ["macOS"]
         }
       }
     },
@@ -383,9 +318,7 @@
       "hidden": true,
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
-      "inherits": [
-        "relwithdebinfo"
-      ],
+      "inherits": ["relwithdebinfo"],
       "cacheVariables": {
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install",
         "CMAKE_TOOLCHAIN_FILE": "$env{ANDROID_HOME}/ndk/$env{ANDROID_NDK_VERSION}/build/cmake/android.toolchain.cmake",
@@ -407,9 +340,7 @@
     {
       "name": "android-arm64",
       "displayName": "Android (arm64-v8a)",
-      "inherits": [
-        "android-base"
-      ],
+      "inherits": ["android-base"],
       "cacheVariables": {
         "ANDROID_ABI": "arm64-v8a"
       }
@@ -417,9 +348,7 @@
     {
       "name": "android-x86_64",
       "displayName": "Android (x86_64)",
-      "inherits": [
-        "android-base"
-      ],
+      "inherits": ["android-base"],
       "cacheVariables": {
         "ANDROID_ABI": "x86_64"
       }
@@ -427,11 +356,7 @@
     {
       "name": "x-android-ci",
       "hidden": true,
-      "inherits": [
-        "android-base",
-        "ci",
-        "release"
-      ],
+      "inherits": ["android-base", "ci", "release"],
       "cacheVariables": {
         "DUSK_ENABLE_SENTRY_NATIVE": {
           "type": "BOOL",
@@ -442,9 +367,7 @@
     {
       "name": "x-android-ci-arm64",
       "binaryDir": "${sourceDir}/build/android-arm64",
-      "inherits": [
-        "x-android-ci"
-      ],
+      "inherits": ["x-android-ci"],
       "cacheVariables": {
         "ANDROID_ABI": "arm64-v8a",
         "Rust_CARGO_TARGET": "aarch64-linux-android"
@@ -453,10 +376,7 @@
     {
       "name": "x-linux-ci",
       "hidden": true,
-      "inherits": [
-        "relwithdebinfo",
-        "ci"
-      ],
+      "inherits": ["relwithdebinfo", "ci"],
       "cacheVariables": {
         "AURORA_SDL3_PROVIDER": "vendor",
         "CMAKE_LINKER_TYPE": "MOLD"
@@ -464,24 +384,15 @@
     },
     {
       "name": "x-linux-ci-gcc",
-      "inherits": [
-        "x-linux-ci",
-        "linux-default"
-      ]
+      "inherits": ["x-linux-ci", "linux-default"]
     },
     {
       "name": "x-linux-ci-clang",
-      "inherits": [
-        "x-linux-ci",
-        "linux-clang"
-      ]
+      "inherits": ["x-linux-ci", "linux-clang"]
     },
     {
       "name": "x-macos-ci",
-      "inherits": [
-        "macos-default-relwithdebinfo",
-        "ci"
-      ],
+      "inherits": ["macos-default-relwithdebinfo", "ci"],
       "cacheVariables": {
         "AURORA_NOD_PROVIDER": "vendor",
         "CMAKE_DISABLE_FIND_PACKAGE_PkgConfig": {
@@ -494,18 +405,14 @@
     },
     {
       "name": "x-macos-ci-arm64",
-      "inherits": [
-        "x-macos-ci"
-      ],
+      "inherits": ["x-macos-ci"],
       "cacheVariables": {
         "CMAKE_OSX_ARCHITECTURES": "arm64"
       }
     },
     {
       "name": "x-macos-ci-x86_64",
-      "inherits": [
-        "x-macos-ci"
-      ],
+      "inherits": ["x-macos-ci"],
       "cacheVariables": {
         "CMAKE_OSX_ARCHITECTURES": "x86_64",
         "Rust_CARGO_TARGET": "x86_64-apple-darwin"
@@ -513,9 +420,7 @@
     },
     {
       "name": "x-ios-ci",
-      "inherits": [
-        "ios-default"
-      ],
+      "inherits": ["ios-default"],
       "cacheVariables": {
         "CMAKE_C_COMPILER_LAUNCHER": "sccache",
         "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
@@ -523,9 +428,7 @@
     },
     {
       "name": "x-tvos-ci",
-      "inherits": [
-        "tvos-default"
-      ],
+      "inherits": ["tvos-default"],
       "cacheVariables": {
         "CMAKE_C_COMPILER_LAUNCHER": "sccache",
         "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
@@ -534,10 +437,7 @@
     {
       "name": "x-windows-ci",
       "hidden": true,
-      "inherits": [
-        "relwithdebinfo",
-        "ci"
-      ],
+      "inherits": ["relwithdebinfo", "ci"],
       "cacheVariables": {
         "CMAKE_MSVC_DEBUG_INFORMATION_FORMAT": "Embedded",
         "CMAKE_TOOLCHAIN_FILE": {
@@ -549,24 +449,15 @@
     },
     {
       "name": "x-windows-ci-msvc",
-      "inherits": [
-        "x-windows-ci",
-        "windows-msvc"
-      ]
+      "inherits": ["x-windows-ci", "windows-msvc"]
     },
     {
       "name": "x-windows-ci-clang",
-      "inherits": [
-        "x-windows-ci",
-        "windows-clang"
-      ]
+      "inherits": ["x-windows-ci", "windows-clang"]
     },
     {
       "name": "x-windows-ci-arm64-msvc",
-      "inherits": [
-        "x-windows-ci",
-        "windows-arm64-msvc"
-      ],
+      "inherits": ["x-windows-ci", "windows-arm64-msvc"],
       "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "arm64-windows"
       }
@@ -632,45 +523,35 @@
       "configurePreset": "ios-default",
       "description": "iOS release build with debug info",
       "displayName": "iOS RelWithDebInfo",
-      "targets": [
-        "dusklight"
-      ]
+      "targets": ["dusklight"]
     },
     {
       "name": "tvos-default",
       "configurePreset": "tvos-default",
       "description": "tvOS release build with debug info",
       "displayName": "tvOS RelWithDebInfo",
-      "targets": [
-        "dusklight"
-      ]
+      "targets": ["dusklight"]
     },
     {
       "name": "android-arm64",
       "configurePreset": "android-arm64",
       "description": "Android arm64-v8a release build with debug info",
       "displayName": "Android arm64-v8a RelWithDebInfo",
-      "targets": [
-        "dusklight"
-      ]
+      "targets": ["dusklight"]
     },
     {
       "name": "android-x86_64",
       "configurePreset": "android-x86_64",
       "description": "Android x86_64 release build with debug info",
       "displayName": "Android x86_64 RelWithDebInfo",
-      "targets": [
-        "dusklight"
-      ]
+      "targets": ["dusklight"]
     },
     {
       "name": "x-android-ci-arm64",
       "configurePreset": "x-android-ci-arm64",
       "description": "(Internal) Android CI arm64-v8a",
       "displayName": "(Internal) Android CI arm64-v8a",
-      "targets": [
-        "dusklight"
-      ]
+      "targets": ["dusklight"]
     },
     {
       "name": "windows-msvc-debug",
@@ -707,81 +588,63 @@
       "configurePreset": "x-linux-ci-gcc",
       "description": "(Internal) Linux CI GCC",
       "displayName": "(Internal) Linux CI GCC",
-      "targets": [
-        "install"
-      ]
+      "targets": ["install"]
     },
     {
       "name": "x-linux-ci-clang",
       "configurePreset": "x-linux-ci-clang",
       "description": "(Internal) Linux CI Clang",
       "displayName": "(Internal) Linux CI Clang",
-      "targets": [
-        "install"
-      ]
+      "targets": ["install"]
     },
     {
       "name": "x-macos-ci-arm64",
       "configurePreset": "x-macos-ci-arm64",
       "description": "(Internal) macOS CI arm64",
       "displayName": "(Internal) macOS CI arm64",
-      "targets": [
-        "install"
-      ]
+      "targets": ["install"]
     },
     {
       "name": "x-macos-ci-x86_64",
       "configurePreset": "x-macos-ci-x86_64",
       "description": "(Internal) macOS CI x86_64",
       "displayName": "(Internal) macOS CI x86_64",
-      "targets": [
-        "install"
-      ]
+      "targets": ["install"]
     },
     {
       "name": "x-ios-ci",
       "configurePreset": "x-ios-ci",
       "description": "(Internal) iOS CI arm64",
       "displayName": "(Internal) iOS CI arm64",
-      "targets": [
-        "install"
-      ]
+      "targets": ["install"]
     },
     {
       "name": "x-tvos-ci",
       "configurePreset": "x-tvos-ci",
       "description": "(Internal) tvOS CI arm64",
       "displayName": "(Internal) tvOS CI arm64",
-      "targets": [
-        "install"
-      ]
+      "targets": ["install"]
     },
     {
       "name": "x-windows-ci-msvc",
       "configurePreset": "x-windows-ci-msvc",
       "description": "(Internal) Windows CI MSVC",
       "displayName": "(Internal) Windows CI MSVC",
-      "targets": [
-        "install"
-      ]
+      "targets": ["install"]
     },
     {
       "name": "x-windows-ci-clang",
       "configurePreset": "x-windows-ci-clang",
       "description": "(Internal) Windows CI Clang",
       "displayName": "(Internal) Windows CI Clang",
-      "targets": [
-        "install"
-      ]
+      "targets": ["install"]
     },
     {
       "name": "x-windows-ci-arm64-msvc",
       "configurePreset": "x-windows-ci-arm64-msvc",
       "description": "(Internal) Windows CI MSVC arm64",
       "displayName": "(Internal) Windows CI MSVC arm64",
-      "targets": [
-        "install"
-      ]
+      "targets": ["install"]
     }
   ]
 }

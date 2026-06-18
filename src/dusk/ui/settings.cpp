@@ -15,6 +15,8 @@
 #include "dusk/io.hpp"
 #include "dusk/livesplit.h"
 #include "dusk/discord_presence.hpp"
+#include "dusk/logging.h"
+#include "dusk/modding/mod_manager.hpp"
 #include "graphics_tuner.hpp"
 #include "m_Do/m_Do_main.h"
 #include "menu_bar.hpp"
@@ -28,6 +30,7 @@
 
 #include <aurora/lib/window.hpp>
 #include <SDL3/SDL_filesystem.h>
+#include <SDL3/SDL_misc.h>
 #include <fmt/format.h>
 
 #if DUSK_ENABLE_SENTRY_NATIVE
@@ -36,6 +39,7 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <system_error>
 
 #if defined(__APPLE__)
 #include <TargetConditionals.h>
@@ -95,6 +99,8 @@ constexpr std::array kMagicArmorModes = {
     "Invincible",
     "Cosmetic",
 };
+
+bool gRefreshModsTabRequested = false;
 
 bool try_parse_backend(std::string_view backend, AuroraBackend& outBackend) {
     if (backend == "auto") {
@@ -353,6 +359,96 @@ void show_data_folder_error_modal(std::string_view message) {
     if (auto* doc = top_document()) {
         doc->focus();
     }
+}
+
+void show_mod_result_modal(Rml::String title, std::string_view message, bool success) {
+    auto dismiss = [](Modal& modal) {
+        mDoAud_seStartMenu(kSoundWindowClose);
+        modal.pop();
+    };
+    push_document(std::make_unique<Modal>(Modal::Props{
+        .title = std::move(title),
+        .bodyRml = escape(message),
+        .actions =
+            {
+                ModalAction{
+                    .label = "OK",
+                    .onPressed = dismiss,
+                },
+            },
+        .onDismiss = dismiss,
+        .icon = success ? "check" : "warning",
+    }));
+    if (auto* doc = top_document()) {
+        doc->focus();
+    }
+}
+
+void ensure_mods_directory() {
+    std::error_code ec;
+    std::filesystem::create_directories(modding::mods_directory(), ec);
+    if (ec) {
+        DuskLog.warn("Failed to create mods directory '{}': {}",
+            io::fs_path_to_string(modding::mods_directory()), ec.message());
+    }
+}
+
+void open_mods_folder() {
+    ensure_mods_directory();
+    const auto path = std::filesystem::absolute(modding::mods_directory());
+#if defined(_WIN32)
+    const std::string url = "file:///" + path.generic_string();
+#else
+    const std::string url = "file://" + path.generic_string();
+#endif
+    if (SDL_OpenURL(url.c_str())) {
+        mDoAud_seStartMenu(kSoundClick);
+    } else {
+        mDoAud_seStartMenu(kSoundWindowClose);
+        show_mod_result_modal("Mods Folder Not Opened", SDL_GetError(), false);
+    }
+}
+
+void mod_file_dialog_callback(void*, const char* path, const char* error) {
+    if (error != nullptr) {
+        mDoAud_seStartMenu(kSoundWindowClose);
+        show_mod_result_modal("Mod Not Loaded", error, false);
+        return;
+    }
+    if (path == nullptr) {
+        return;
+    }
+
+    std::string loadError;
+    const bool loaded = modding::load_mod_library(std::filesystem::path{path}, &loadError);
+    if (loaded) {
+        gRefreshModsTabRequested = true;
+        mDoAud_seStartMenu(kSoundItemChange);
+        show_mod_result_modal("Mod Loaded", "The mod was loaded successfully.", true);
+    } else {
+        mDoAud_seStartMenu(kSoundWindowClose);
+        show_mod_result_modal("Mod Not Loaded", loadError, false);
+    }
+}
+
+void open_mod_picker() {
+    ensure_mods_directory();
+#if defined(_WIN32)
+    static constexpr SDL_DialogFileFilter filters[] = {
+        {"Dusklight Mod", "json;dll"},
+    };
+#elif defined(__APPLE__)
+    static constexpr SDL_DialogFileFilter filters[] = {
+        {"Dusklight Mod", "json;dylib"},
+    };
+#else
+    static constexpr SDL_DialogFileFilter filters[] = {
+        {"Dusklight Mod", "json;so"},
+    };
+#endif
+    const auto defaultLocation = io::fs_path_to_string(modding::mods_directory());
+    ShowFileSelect(&mod_file_dialog_callback, nullptr, aurora::window::get_sdl_window(),
+        filters, static_cast<int>(std::size(filters)), defaultLocation.c_str(), false);
 }
 
 void data_folder_dialog_callback(void*, const char* path, const char* error) {
@@ -1378,6 +1474,75 @@ SettingsWindow::SettingsWindow(bool prelaunch) : mPrelaunch(prelaunch) {
             "Prevents enemies from taking damage.");
     });
 
+    add_tab("Mods", [this](Rml::Element* content) {
+        auto& leftPane = add_child<Pane>(content, Pane::Type::Controlled);
+        auto& rightPane = add_child<Pane>(content, Pane::Type::Uncontrolled);
+
+        leftPane.add_section("Management");
+        leftPane.register_control(
+            leftPane.add_button("Load Mod...").on_pressed([] { open_mod_picker(); }),
+            rightPane, [](Pane& pane) {
+                pane.add_text("Load a mod manifest or native library from the data folder.");
+                pane.add_rml("<br/>Recommended layout: mods/&lt;id&gt;/mod.json");
+            });
+
+#if DUSK_CAN_OPEN_DATA_FOLDER
+        leftPane.register_control(
+            leftPane.add_button("Open Mods Folder").on_pressed([] { open_mods_folder(); }),
+            rightPane, [](Pane& pane) {
+                pane.add_text("Open the folder Dusklight scans and uses for local mod packages.");
+                pane.add_rml(std::string{"<br/>Current path:<br/>"} +
+                             escape(io::fs_path_to_string(modding::mods_directory())));
+            });
+#endif
+
+        leftPane.add_section("Loaded");
+        const auto mods = modding::loaded_mods();
+        if (mods.empty()) {
+            leftPane.register_control(
+                leftPane.add_select_button({
+                    .key = "No Mods Loaded",
+                    .getValue = [] { return Rml::String{"Idle"}; },
+                    .isDisabled = [] { return true; },
+                }),
+                rightPane, [](Pane& pane) {
+                    pane.add_text("Use Load Mod... to load a .json manifest or native library.");
+                });
+        } else {
+            for (const auto& mod : mods) {
+                leftPane.register_control(
+                    leftPane.add_select_button({
+                        .key = mod.manifest.name,
+                        .getValue = [status = mod.status] { return status; },
+                    }),
+                    rightPane,
+                    [id = mod.manifest.id, version = mod.manifest.version,
+                        sdkVersion = mod.manifest.sdk_version,
+                        path = io::fs_path_to_string(mod.library_path),
+                        synthetic = mod.manifest.synthetic](Pane& pane) {
+                        pane.add_section(id);
+                        pane.add_text("Version: " + version);
+                        pane.add_text("SDK: " + sdkVersion);
+                        pane.add_text("Library: " + path);
+                        if (synthetic) {
+                            pane.add_rml("<br/>This mod was loaded directly without mod.json.");
+                        }
+                    });
+            }
+        }
+
+        const auto lastError = modding::last_error();
+        if (!lastError.empty()) {
+            leftPane.add_section("Last Error");
+            leftPane.register_control(
+                leftPane.add_select_button({
+                    .key = "Loader Error",
+                    .getValue = [] { return Rml::String{"Open"}; },
+                }),
+                rightPane, [lastError](Pane& pane) { pane.add_text(lastError); });
+        }
+    });
+
     add_tab("Interface", [this](Rml::Element* content) {
         auto& leftPane = add_child<Pane>(content, Pane::Type::Controlled);
         auto& rightPane = add_child<Pane>(content, Pane::Type::Uncontrolled);
@@ -1591,6 +1756,11 @@ SettingsWindow::SettingsWindow(bool prelaunch) : mPrelaunch(prelaunch) {
 void SettingsWindow::update() {
     if (mPrelaunch && top_document() == this) {
         try_push_verification_modal(*this);
+    }
+
+    if (gRefreshModsTabRequested) {
+        gRefreshModsTabRequested = false;
+        refresh_active_tab();
     }
 
     Window::update();
