@@ -4,6 +4,7 @@
 
 #include "dusklight/modding/components.hpp"
 #include "dusklight/modding/events.hpp"
+#include "flecs.h"
 
 namespace dusk::modding {
 namespace {
@@ -45,6 +46,7 @@ void initialize() {
     }
 
     gWorld = std::make_unique<flecs::world>();
+    gWorld->set(flecs::Rest{});
     gFrameIndex = 0;
     register_public_types(*gWorld);
     gFrameEntity = gWorld->entity("dusk_frame");

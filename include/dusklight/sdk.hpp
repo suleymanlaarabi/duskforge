@@ -4,6 +4,7 @@
 
 #include <dusklight/modding/components.hpp>
 #include <dusklight/modding/events.hpp>
+#include <dusklight/modding/log.hpp>
 #include <dusklight/modding/version.hpp>
 
 #if defined(_WIN32)
@@ -16,4 +17,3 @@ using DuskModInitFn = void (*)(flecs::world*);
 
 #define DUSK_MOD_INIT(name) \
     extern "C" DUSK_MOD_EXPORT void dusk_mod_init(flecs::world* name)
-

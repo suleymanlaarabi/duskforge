@@ -1419,6 +1419,7 @@ set(DUSK_FILES
         include/dusklight/sdk.hpp
         include/dusklight/modding/components.hpp
         include/dusklight/modding/events.hpp
+        include/dusklight/modding/log.hpp
         include/dusklight/modding/version.hpp
         src/dusk/dvd_asset.cpp
         src/d/actor/d_a_alink_dusk.cpp
@@ -1451,6 +1452,8 @@ set(DUSK_FILES
         src/dusk/logging.cpp
         src/dusk/modding/game_bridge.cpp
         src/dusk/modding/game_bridge.hpp
+        src/dusk/modding/mod_log.cpp
+        src/dusk/modding/mod_log.hpp
         src/dusk/modding/mod_manager.cpp
         src/dusk/modding/mod_manager.hpp
         src/dusk/modding/mod_manifest.cpp

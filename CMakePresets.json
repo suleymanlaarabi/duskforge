@@ -73,6 +73,10 @@
           "value": false
         },
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": {
+          "type": "BOOL",
+          "value": true
+        },
         "CMAKE_LINKER_TYPE": "LLD"
       },
       "vendor": {

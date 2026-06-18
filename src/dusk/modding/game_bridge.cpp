@@ -92,6 +92,8 @@ void destroy_entity(fpc_ProcID id, flecs::entity entity) {
     entity.destruct();
 }
 
+// Runs once per frame over the native actor list. The callback only does hash
+// lookups and POD component writes; mod queries then read a stable ECS snapshot.
 int sync_actor_callback(void* rawActor, void*) {
     auto* actor = static_cast<fopAc_ac_c*>(rawActor);
     const fpc_ProcID id = fopAcM_GetID(actor);
@@ -167,6 +169,8 @@ void sync_before_mods(float) {
         return;
     }
 
+    // The full scan is intentional. It makes the SDK robust against engine code
+    // paths that bypass our create/delete hooks, while keeping the work O(actor_count).
     gSeenThisFrame.clear();
     fopAcIt_Executor(&sync_actor_callback, nullptr);
 
@@ -181,4 +185,3 @@ void sync_before_mods(float) {
 }
 
 }  // namespace dusk::modding::game_bridge
-

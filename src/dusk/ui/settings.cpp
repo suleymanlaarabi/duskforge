@@ -16,6 +16,7 @@
 #include "dusk/livesplit.h"
 #include "dusk/discord_presence.hpp"
 #include "dusk/logging.h"
+#include "dusk/modding/mod_log.hpp"
 #include "dusk/modding/mod_manager.hpp"
 #include "graphics_tuner.hpp"
 #include "m_Do/m_Do_main.h"
@@ -1541,6 +1542,44 @@ SettingsWindow::SettingsWindow(bool prelaunch) : mPrelaunch(prelaunch) {
                 }),
                 rightPane, [lastError](Pane& pane) { pane.add_text(lastError); });
         }
+
+        leftPane.add_section("Developer Log");
+        leftPane.register_control(
+            leftPane.add_button("Refresh Log").on_pressed([] { gRefreshModsTabRequested = true; }),
+            rightPane, [](Pane& pane) {
+                pane.add_text("Reload the visible mod log entries.");
+            });
+        leftPane.register_control(
+            leftPane.add_button("Clear Log").on_pressed([] {
+                modding::clear_mod_log();
+                gRefreshModsTabRequested = true;
+            }),
+            rightPane, [](Pane& pane) {
+                pane.add_text("Clear the in-game mod log buffer. File logs are not deleted.");
+            });
+
+        const auto entries = modding::mod_log_entries();
+        leftPane.register_control(
+            leftPane.add_select_button({
+                .key = "Recent Messages",
+                .getValue = [count = entries.size()] {
+                    return fmt::format("{} shown", count);
+                },
+                .isDisabled = [empty = entries.empty()] { return empty; },
+            }),
+            rightPane, [entries](Pane& pane) {
+                if (entries.empty()) {
+                    pane.add_text("No mod logs yet.");
+                    return;
+                }
+
+                const size_t first = entries.size() > 80 ? entries.size() - 80 : 0;
+                for (size_t i = first; i < entries.size(); ++i) {
+                    const auto& entry = entries[i];
+                    pane.add_text(fmt::format("#{} [{}] {}: {}", entry.sequence,
+                        modding::mod_log_level_name(entry.level), entry.mod_id, entry.message));
+                }
+            });
     });
 
     add_tab("Interface", [this](Rml::Element* content) {

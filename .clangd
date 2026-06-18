@@ -20,6 +20,8 @@ Diagnostics:
     - "illegal_union_or_anon_struct_member"
 Documentation:
   CommentFormat: Doxygen
+Index:
+  Background: Build
 ---
 If:
   PathMatch: .*/*.inc
